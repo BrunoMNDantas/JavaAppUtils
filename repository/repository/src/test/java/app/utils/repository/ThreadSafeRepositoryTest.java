@@ -49,7 +49,7 @@ public class ThreadSafeRepositoryTest  extends TestCase {
     		start.countDown();
     		end.await();
     		assertEquals(nThreads * insertPerThread, success.get());	
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
 			Assert.fail(e.getMessage());
 		}
 	}

@@ -58,7 +58,7 @@ public class NullFreeRepositoryTest  extends TestCase {
     		Assert.assertFalse(called[delete]);
     		Assert.assertFalse(called[update]);
     		Assert.assertEquals(repository.getAll().size(), 0);
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			Assert.fail(e.getMessage());
 		}
     	
@@ -75,7 +75,7 @@ public class NullFreeRepositoryTest  extends TestCase {
     		Assert.assertTrue(called[delete]);
     		Assert.assertTrue(called[update]);
     		Assert.assertEquals(repository.getAll(), null);
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			Assert.fail(e.getMessage());
 		}
     }

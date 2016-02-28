@@ -1,10 +1,12 @@
 package app.utils.repository;
 
 import java.io.FileWriter;
+import java.io.IOException;
 
 import app.utils.log.ILog;
 import app.utils.log.Log;
 import app.utils.repository.repository.CacheRepository;
+import app.utils.repository.repository.CloneableRepository;
 import app.utils.repository.repository.IRepository;
 import app.utils.repository.repository.LoggerRepository;
 import app.utils.repository.repository.MemoryRepository;
@@ -39,11 +41,12 @@ public class BasicTest  extends TestCase {
 			test(new NullFreeRepository<>( new MemoryRepository<>(KEY_EXTRACTOR)));
 			test(new ObservableRepository<>( new MemoryRepository<>(KEY_EXTRACTOR)));
 			test(new ThreadSafeRepository<>( new MemoryRepository<>(KEY_EXTRACTOR)));
+			test(new CloneableRepository<>( new MemoryRepository<>(KEY_EXTRACTOR)));
 			
 			try(ILog log =  new Log(new FileWriter("D:/Desktop/Log.json"))) {
 				test(new LoggerRepository<>(new MemoryRepository<>(KEY_EXTRACTOR),log));	
 			}
-		} catch (Throwable e) {
+		} catch (RepositoryException | IOException e) {
 			Assert.fail(e.getMessage());
 		}
     }
@@ -55,7 +58,7 @@ public class BasicTest  extends TestCase {
 		Assert.assertTrue(repository.getAll().isEmpty());
 		
 		repository.insert(p);
-		Assert.assertEquals(repository.get("Ronaldo"), p);
+		Assert.assertTrue(repository.get("Ronaldo").equals(p));
 		Assert.assertTrue(repository.getAll().size()==1);
 		
 		repository.delete(p);
@@ -65,7 +68,7 @@ public class BasicTest  extends TestCase {
 		repository.insert(p);
 		p.age = 99;
 		repository.update(p);
-		Assert.assertEquals(repository.get("Ronaldo"), p);
+		Assert.assertTrue(repository.get("Ronaldo").equals(p));
 	}
     
 }

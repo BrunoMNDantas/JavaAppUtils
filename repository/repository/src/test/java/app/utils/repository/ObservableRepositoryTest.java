@@ -65,7 +65,7 @@ public class ObservableRepositoryTest  extends TestCase {
     		unregister(onGet, onGetAll, onInsert, onDelete, onUpdate);
         	
         	useRepository(person);
-		} catch (Throwable e) {
+		} catch (RepositoryException e) {
 			Assert.fail(e.getMessage());
 		}
     	

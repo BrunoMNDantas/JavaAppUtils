@@ -8,6 +8,7 @@ import app.utils.repository.repository.IRepository;
 import app.utils.repository.repository.MemoryRepository;
 import app.utils.repository.repository.ObservableRepository;
 import app.utils.repository.utils.KeyExtractor;
+import app.utils.repository.utils.RepositoryException;
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -77,7 +78,7 @@ public class CacheRepositoryTest  extends TestCase {
     		Assert.assertFalse(called[getAll]);
     		Assert.assertTrue(called[insert]);
     		
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			Assert.fail(e.getMessage());
 		}
     }
