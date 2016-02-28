@@ -31,6 +31,10 @@ public class MemoryRepository<T,K> implements IRepository<T,K> {
 	@Override
 	public boolean insert(T elem) throws RepositoryException {
 		K key = keyExtractor.extract(elem);
+		
+		if(elems.containsKey(key))
+			throw new RepositoryException("Elem with key[" + key + "] already exists!");
+		
 		elems.put(key, elem);
 		return true;
 	}
