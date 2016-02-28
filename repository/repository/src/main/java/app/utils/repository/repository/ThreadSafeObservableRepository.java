@@ -7,6 +7,14 @@ public class ThreadSafeObservableRepository<T,K> extends ThreadSafeRepository<T,
 	
 	private final ObservableRepository<T,K> repo;
 	
+	public ThreadSafeObservableRepository(	Consumer<T> onGet, Consumer<Collection<T>> onGetAll, Consumer<T> onInsert, 
+											Consumer<T> onDelete, Consumer<T> onUpdate, 
+											IRepository<T,K> repository) {
+		super(new ObservableRepository<>(onGet, onGetAll, onInsert, onDelete, onUpdate, repository));
+		this.repo = (ObservableRepository<T,K>)super.repository;
+	}
+	
+	
 	public ThreadSafeObservableRepository(IRepository<T,K> repository){
 		super(new ObservableRepository<>(repository));
 		this.repo = (ObservableRepository<T,K>)super.repository;
