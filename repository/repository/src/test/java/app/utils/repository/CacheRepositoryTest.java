@@ -7,7 +7,7 @@ import app.utils.repository.repository.CacheRepository;
 import app.utils.repository.repository.IRepository;
 import app.utils.repository.repository.MemoryRepository;
 import app.utils.repository.repository.ObservableRepository;
-import app.utils.repository.utils.KeyExtractor;
+import app.utils.repository.utils.IKeyExtractor;
 import app.utils.repository.utils.RepositoryException;
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -25,7 +25,7 @@ public class CacheRepositoryTest  extends TestCase {
         return new TestSuite( CacheRepositoryTest.class );
     }
     
-    private static final KeyExtractor<Person,String> KEY_EXTRACTOR = (p)->p.name;
+    private static final IKeyExtractor<Person,String> KEY_EXTRACTOR = (p)->p.name;
     private static final IRepository<Person,String> baseRepository = new MemoryRepository<>(KEY_EXTRACTOR);
     private static final ObservableRepository<Person,String> observedRepository = new ObservableRepository<>(baseRepository);
     

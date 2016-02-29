@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import app.utils.repository.repository.MemoryRepository;
 import app.utils.repository.repository.ThreadSafeRepository;
-import app.utils.repository.utils.KeyExtractor;
+import app.utils.repository.utils.IKeyExtractor;
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -23,7 +23,7 @@ public class ThreadSafeRepositoryTest  extends TestCase {
     }
     
     
-    private static final KeyExtractor<Person, String> KEY_EXTRACTOR = (person)->person.name;
+    private static final IKeyExtractor<Person, String> KEY_EXTRACTOR = (person)->person.name;
     private static final ThreadSafeRepository<Person,String> repository = new ThreadSafeRepository<>(new MemoryRepository<>(KEY_EXTRACTOR));
 
     private final int nThreads = 16;

@@ -5,15 +5,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import app.utils.repository.utils.KeyExtractor;
+import app.utils.repository.utils.IKeyExtractor;
 import app.utils.repository.utils.RepositoryException;
 
 public class MemoryRepository<T,K> implements IRepository<T,K> {
 
-	private final KeyExtractor<T,K> keyExtractor;
+	private final IKeyExtractor<T,K> keyExtractor;
 	private final Map<K,T> elems = new HashMap<>();
 	
-	public MemoryRepository(KeyExtractor<T,K> keyExtractor) {
+	public MemoryRepository(IKeyExtractor<T,K> keyExtractor) {
 		this.keyExtractor = keyExtractor;
 	}
 	

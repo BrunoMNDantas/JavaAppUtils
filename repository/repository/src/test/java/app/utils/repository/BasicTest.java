@@ -13,7 +13,8 @@ import app.utils.repository.repository.MemoryRepository;
 import app.utils.repository.repository.NullFreeRepository;
 import app.utils.repository.repository.ObservableRepository;
 import app.utils.repository.repository.ThreadSafeRepository;
-import app.utils.repository.utils.KeyExtractor;
+import app.utils.repository.repository.ValidateRepository;
+import app.utils.repository.utils.IKeyExtractor;
 import app.utils.repository.utils.RepositoryException;
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -32,7 +33,7 @@ public class BasicTest  extends TestCase {
     }
     
     
-    private static final KeyExtractor<Person, String> KEY_EXTRACTOR = (person)->person.name;
+    private static final IKeyExtractor<Person, String> KEY_EXTRACTOR = (person)->person.name;
 
     public void testBasic() {
     	try {
@@ -42,6 +43,7 @@ public class BasicTest  extends TestCase {
 			test(new ObservableRepository<>( new MemoryRepository<>(KEY_EXTRACTOR)));
 			test(new ThreadSafeRepository<>( new MemoryRepository<>(KEY_EXTRACTOR)));
 			test(new CloneableRepository<>( new MemoryRepository<>(KEY_EXTRACTOR)));
+			test(new ValidateRepository<>(null, null, null, null, null, ( new MemoryRepository<>(KEY_EXTRACTOR))));
 			
 			try(ILog log =  new Log(new FileWriter("D:/Desktop/Log.json"))) {
 				test(new LoggerRepository<>(new MemoryRepository<>(KEY_EXTRACTOR),log));	

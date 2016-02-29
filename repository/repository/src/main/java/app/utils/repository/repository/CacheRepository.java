@@ -3,18 +3,18 @@ package app.utils.repository.repository;
 import java.util.Collection;
 
 import app.utils.repository.utils.Cache;
-import app.utils.repository.utils.KeyExtractor;
+import app.utils.repository.utils.IKeyExtractor;
 import app.utils.repository.utils.RepositoryException;
 
 public class CacheRepository<T,K> implements IRepository<T,K>{
 	
 	private final Cache<T,K> cache = new Cache<>();
 	private final IRepository<T,K> repository;
-	private final KeyExtractor<T,K> keyExtractor; 
+	private final IKeyExtractor<T,K> keyExtractor; 
 	private boolean allLoaded = false;
 	
 	
-	public CacheRepository(IRepository<T,K> repository, KeyExtractor<T,K> keyExtractor) {
+	public CacheRepository(IRepository<T,K> repository, IKeyExtractor<T,K> keyExtractor) {
 		this.repository = repository;
 		this.keyExtractor = keyExtractor;
 	}
