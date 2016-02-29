@@ -28,40 +28,40 @@ public class ValidateRepository<T,K> implements IRepository<T,K>{
 	
 	@Override
 	public T get(K key) throws RepositoryException {
-		if(getValidator != null)
-			getValidator.validate(key);
+		if(getValidator != null && !getValidator.validate(key))
+			throw new RepositoryException("Invalid get operation for key[" + key + "]");
 		
 		return repository.get(key);
 	}
 
 	@Override
 	public Collection<T> getAll() throws RepositoryException {
-		if(getAllValidator != null)
-			getAllValidator.validate(null);
+		if(getAllValidator != null && !getAllValidator.validate(null))
+			throw new RepositoryException("Invalid getAll operation");
 		
 		return repository.getAll();
 	}
 
 	@Override
 	public boolean insert(T elem) throws RepositoryException {
-		if(insertValidator != null)
-			insertValidator.validate(elem);
+		if(insertValidator != null && !insertValidator.validate(elem))
+			throw new RepositoryException("Invalid insert operation for elem[" + elem + "]");
 		
 		return repository.insert(elem);
 	}
 
 	@Override
 	public boolean delete(T elem) throws RepositoryException {
-		if(deleteValidator != null)
-			deleteValidator.validate(elem);
+		if(deleteValidator != null && !deleteValidator.validate(elem))
+			throw new RepositoryException("Invalid delete operation for elem[" + elem + "]");
 		
 		return repository.delete(elem);
 	}
 
 	@Override
 	public boolean update(T elem) throws RepositoryException {
-		if(updateValidator != null)
-			updateValidator.validate(elem);
+		if(updateValidator != null && !updateValidator.validate(elem))
+			throw new RepositoryException("Invalid update operation for elem[" + elem + "]");
 		
 		return repository.update(elem);
 	}
