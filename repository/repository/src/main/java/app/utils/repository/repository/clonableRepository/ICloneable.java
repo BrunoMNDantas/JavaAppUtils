@@ -1,4 +1,4 @@
-package app.utils.repository.utils;
+package app.utils.repository.repository.clonableRepository;
 
 public interface ICloneable<T> {
 

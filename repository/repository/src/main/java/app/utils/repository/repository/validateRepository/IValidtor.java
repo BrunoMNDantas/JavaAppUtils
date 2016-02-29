@@ -1,4 +1,6 @@
-package app.utils.repository.utils;
+package app.utils.repository.repository.validateRepository;
+
+import app.utils.repository.utils.RepositoryException;
 
 @FunctionalInterface
 public interface IValidtor<T> {

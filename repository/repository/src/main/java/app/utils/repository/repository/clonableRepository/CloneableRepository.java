@@ -1,9 +1,9 @@
-package app.utils.repository.repository;
+package app.utils.repository.repository.clonableRepository;
 
 import java.util.Collection;
 import java.util.LinkedList;
 
-import app.utils.repository.utils.ICloneable;
+import app.utils.repository.repository.IRepository;
 import app.utils.repository.utils.RepositoryException;
 
 public class CloneableRepository<T extends ICloneable<T>,K> implements IRepository<T,K> {

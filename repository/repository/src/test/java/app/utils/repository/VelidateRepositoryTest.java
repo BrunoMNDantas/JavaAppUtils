@@ -2,9 +2,9 @@ package app.utils.repository;
 
 import app.utils.repository.repository.IRepository;
 import app.utils.repository.repository.MemoryRepository;
-import app.utils.repository.repository.ValidateRepository;
+import app.utils.repository.repository.validateRepository.IValidtor;
+import app.utils.repository.repository.validateRepository.ValidateRepository;
 import app.utils.repository.utils.IKeyExtractor;
-import app.utils.repository.utils.IValidtor;
 import app.utils.repository.utils.RepositoryException;
 import junit.framework.Assert;
 import junit.framework.Test;

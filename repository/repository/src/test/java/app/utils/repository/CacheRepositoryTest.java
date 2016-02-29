@@ -3,10 +3,10 @@ package app.utils.repository;
 import java.util.Collection;
 import java.util.function.Consumer;
 
-import app.utils.repository.repository.CacheRepository;
 import app.utils.repository.repository.IRepository;
 import app.utils.repository.repository.MemoryRepository;
 import app.utils.repository.repository.ObservableRepository;
+import app.utils.repository.repository.cacheRepository.CacheRepository;
 import app.utils.repository.utils.IKeyExtractor;
 import app.utils.repository.utils.RepositoryException;
 import junit.framework.Assert;

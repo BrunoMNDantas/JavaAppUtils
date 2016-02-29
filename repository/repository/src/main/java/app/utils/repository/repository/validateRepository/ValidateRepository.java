@@ -1,8 +1,8 @@
-package app.utils.repository.repository;
+package app.utils.repository.repository.validateRepository;
 
 import java.util.Collection;
 
-import app.utils.repository.utils.IValidtor;
+import app.utils.repository.repository.IRepository;
 import app.utils.repository.utils.RepositoryException;
 
 public class ValidateRepository<T,K> implements IRepository<T,K>{

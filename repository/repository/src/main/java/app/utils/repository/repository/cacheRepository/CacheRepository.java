@@ -1,8 +1,8 @@
-package app.utils.repository.repository;
+package app.utils.repository.repository.cacheRepository;
 
 import java.util.Collection;
 
-import app.utils.repository.utils.Cache;
+import app.utils.repository.repository.IRepository;
 import app.utils.repository.utils.IKeyExtractor;
 import app.utils.repository.utils.RepositoryException;
 

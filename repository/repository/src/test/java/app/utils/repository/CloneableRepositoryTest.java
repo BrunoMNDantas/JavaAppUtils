@@ -1,7 +1,7 @@
 package app.utils.repository;
 
-import app.utils.repository.repository.CloneableRepository;
 import app.utils.repository.repository.MemoryRepository;
+import app.utils.repository.repository.clonableRepository.CloneableRepository;
 import app.utils.repository.utils.IKeyExtractor;
 import app.utils.repository.utils.RepositoryException;
 import junit.framework.Assert;
