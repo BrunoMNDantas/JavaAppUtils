@@ -7,10 +7,15 @@ import app.utils.repository.utils.RepositoryException;
 public class ThreadSafeRepository<T,K> implements IRepository<T,K>{
 
 	protected final IRepository<T,K> repository;
-	protected final Object lock = new Object();
+	protected final Object lock;
+	
+	public ThreadSafeRepository(IRepository<T,K> repository, Object lock) {
+		this.repository = repository;
+		this.lock = lock;
+	}
 	
 	public ThreadSafeRepository(IRepository<T,K> repository) {
-		this.repository = repository;
+		this(repository, new Object());
 	}
 	
 	@Override

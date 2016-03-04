@@ -9,11 +9,22 @@ public class ThreadSafeObservableRepository<T,K> extends ThreadSafeRepository<T,
 	
 	public ThreadSafeObservableRepository(	Consumer<T> onGet, Consumer<Collection<T>> onGetAll, Consumer<T> onInsert, 
 											Consumer<T> onDelete, Consumer<T> onUpdate, 
+											IRepository<T,K> repository, Object lock) {
+		super(new ObservableRepository<>(onGet, onGetAll, onInsert, onDelete, onUpdate, repository), lock);
+		this.repo = (ObservableRepository<T,K>)super.repository;
+	}
+	
+	public ThreadSafeObservableRepository(IRepository<T,K> repository, Object lock){
+		super(new ObservableRepository<>(repository), lock);
+		this.repo = (ObservableRepository<T,K>)super.repository;
+	}
+	
+	public ThreadSafeObservableRepository(	Consumer<T> onGet, Consumer<Collection<T>> onGetAll, Consumer<T> onInsert, 
+											Consumer<T> onDelete, Consumer<T> onUpdate, 
 											IRepository<T,K> repository) {
 		super(new ObservableRepository<>(onGet, onGetAll, onInsert, onDelete, onUpdate, repository));
 		this.repo = (ObservableRepository<T,K>)super.repository;
 	}
-	
 	
 	public ThreadSafeObservableRepository(IRepository<T,K> repository){
 		super(new ObservableRepository<>(repository));
