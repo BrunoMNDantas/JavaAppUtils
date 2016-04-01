@@ -1,11 +1,11 @@
-package app.utils.repository.repository;
+package app.utils.repository.repository.loggerRepository;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import app.utils.log.ILog;
+import app.utils.repository.repository.IRepository;
 import app.utils.repository.utils.RepositoryException;
 import app.utils.repository.utils.Utils;
 
