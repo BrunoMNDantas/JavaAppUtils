@@ -4,7 +4,7 @@
 
   <groupId>app.utils</groupId>
   <artifactId>repository</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <packaging>jar</packaging>
 
   <name>repository</name>
@@ -22,6 +22,11 @@
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20160212</version>
     </dependency>
   </dependencies>
 </project>
