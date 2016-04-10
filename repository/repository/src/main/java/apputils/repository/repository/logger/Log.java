@@ -1,4 +1,4 @@
-package apputils.repository.repository.loggerRepository;
+package apputils.repository.repository.logger;
 
 
 import java.io.BufferedWriter;

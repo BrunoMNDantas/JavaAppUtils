@@ -1,4 +1,4 @@
-package apputils.repository.repository.cacheRepository;
+package apputils.repository.repository.cache;
 
 import java.util.Collection;
 import java.util.HashMap;

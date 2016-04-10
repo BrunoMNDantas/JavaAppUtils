@@ -1,4 +1,4 @@
-package apputils.repository.repository.validateRepository;
+package apputils.repository.repository.validate;
 
 import apputils.repository.utils.RepositoryException;
 

@@ -1,15 +1,15 @@
-package apputils.repository.repository.loggerRepository;
+package apputils.repository.repository.logger;
+
+import apputils.repository.repository.IRepository;
+import apputils.repository.utils.RepositoryException;
+import apputils.repository.utils.Utils;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import apputils.repository.repository.IRepository;
-import apputils.repository.utils.RepositoryException;
-import apputils.repository.utils.Utils;
-
-public class LoggerRepository<T,K> implements IRepository<T,K> {
+public class LoggerRepository<T,K,F> implements IRepository<T,K,F> {
 
 	@FunctionalInterface
 	private static interface ExceptionSupplier<T>{
@@ -20,12 +20,12 @@ public class LoggerRepository<T,K> implements IRepository<T,K> {
 	
 
 	
-	private final IRepository<T,K> repository;
+	private final IRepository<T,K,F> repository;
 	private final ILog log;
 	
 	
 	
-	public LoggerRepository(IRepository<T,K> repository, ILog log) {
+	public LoggerRepository(IRepository<T,K,F> repository, ILog log) {
 		this.repository = repository;
 		this.log = log;
 	}
@@ -46,6 +46,14 @@ public class LoggerRepository<T,K> implements IRepository<T,K> {
 			() -> repository.getAll(), 
 			(elems) -> "getAll() returned [" + elems + "]", 
 			(ex) -> "getAll() thrown Exception : " + Utils.getStackTrace(ex));
+	}
+
+	@Override
+	public Collection<T> getAll(F filter) throws RepositoryException {
+		return execute(
+				() -> repository.getAll(filter),
+				(elems) -> "getAll(F filter) returned [" + elems + "]",
+				(ex) -> "getAll(F filter) thrown Exception : " + Utils.getStackTrace(ex));
 	}
 
 	@Override

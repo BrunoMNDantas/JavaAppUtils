@@ -1,20 +1,20 @@
-package apputils.repository.repository.cacheRepository;
-
-import java.util.Collection;
+package apputils.repository.repository.cache;
 
 import apputils.repository.repository.IRepository;
 import apputils.repository.utils.IKeyExtractor;
 import apputils.repository.utils.RepositoryException;
 
-public class CacheRepository<T,K> implements IRepository<T,K>{
+import java.util.Collection;
+
+public class CacheRepository<T,K,F> implements IRepository<T,K,F>{
 	
 	private final Cache<T,K> cache = new Cache<>();
-	private final IRepository<T,K> repository;
+	private final IRepository<T,K,F> repository;
 	private final IKeyExtractor<T,K> keyExtractor; 
 	private boolean allLoaded = false;
 	
 	
-	public CacheRepository(IRepository<T,K> repository, IKeyExtractor<T,K> keyExtractor) {
+	public CacheRepository(IRepository<T,K,F> repository, IKeyExtractor<T,K> keyExtractor) {
 		this.repository = repository;
 		this.keyExtractor = keyExtractor;
 	}
@@ -55,6 +55,23 @@ public class CacheRepository<T,K> implements IRepository<T,K>{
 		
 		return elems;
 	}
+
+	@Override
+	public Collection<T> getAll(F filter) throws RepositoryException {
+		Collection<T> elems = repository.getAll(filter);
+
+		if(elems != null){
+			K key;
+			for(T elem : elems){
+				key = keyExtractor.extract(elem);
+				if(cache.get(key) == null)
+					cache.add(key, elem);
+			}
+		}
+
+		return elems;
+	}
+
 
 	@Override
 	public boolean insert(T elem) throws RepositoryException{

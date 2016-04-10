@@ -1,16 +1,16 @@
-package apputils.repository.repository.clonableRepository;
-
-import java.util.Collection;
-import java.util.LinkedList;
+package apputils.repository.repository.clonable;
 
 import apputils.repository.repository.IRepository;
 import apputils.repository.utils.RepositoryException;
 
-public class CloneableRepository<T extends ICloneable<T>,K> implements IRepository<T,K> {
+import java.util.Collection;
+import java.util.LinkedList;
 
-	private final IRepository<T,K> repository;
+public class CloneableRepository<T extends ICloneable<T>,K,F> implements IRepository<T,K,F> {
+
+	private final IRepository<T,K,F> repository;
 	
-	public CloneableRepository(IRepository<T,K> repository) {
+	public CloneableRepository(IRepository<T,K,F> repository) {
 		this.repository = repository;
 	}
 	
@@ -40,6 +40,25 @@ public class CloneableRepository<T extends ICloneable<T>,K> implements IReposito
 			}
 		}
 		
+		return elemsClone;
+	}
+
+	@Override
+	public Collection<T> getAll(F filter) throws RepositoryException {
+		Collection<T> elems = repository.getAll(filter);
+
+		if(elems == null)
+			return elems;
+
+		Collection<T> elemsClone = new LinkedList<>();
+		for(T elem : elems){
+			try {
+				elemsClone.add(elem == null ? elem : elem.clone());
+			} catch (CloneNotSupportedException e) {
+				throw new RepositoryException("Error cloning elem[" + elem + "]", e);
+			}
+		}
+
 		return elemsClone;
 	}
 
