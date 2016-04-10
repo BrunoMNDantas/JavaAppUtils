@@ -7,7 +7,7 @@ import apputils.repository.utils.RepositoryException;
 import java.sql.*;
 import java.util.Collection;
 
-public abstract class JDBCRepository<T,K> implements IRepository<T,K> {
+public abstract class JDBCRepository<T,K,F> implements IRepository<T,K,F> {
 
     @FunctionalInterface
     public interface JDBCFunction<T,R>{

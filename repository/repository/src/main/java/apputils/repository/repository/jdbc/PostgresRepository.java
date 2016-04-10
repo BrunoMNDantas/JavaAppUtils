@@ -1,6 +1,6 @@
 package apputils.repository.repository.jdbc;
 
-public abstract class PostgresRepository<T,K> extends JDBCRepository<T,K> {
+public abstract class PostgresRepository<T,K,F> extends JDBCRepository<T,K,F> {
 
     public static final String JDBC_DRIVER = "org.postgresql.Driver";
     public static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/tempdb";
