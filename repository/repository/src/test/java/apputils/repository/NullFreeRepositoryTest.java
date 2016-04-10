@@ -1,8 +1,5 @@
 package apputils.repository;
 
-import java.util.Collection;
-import java.util.function.Consumer;
-
 import apputils.repository.repository.IRepository;
 import apputils.repository.repository.NullFreeRepository;
 import apputils.repository.repository.ObservableRepository;
@@ -11,6 +8,10 @@ import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import java.util.Collection;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 
 public class NullFreeRepositoryTest  extends TestCase {
@@ -23,18 +24,21 @@ public class NullFreeRepositoryTest  extends TestCase {
         return new TestSuite( NullFreeRepositoryTest.class );
     }
     
-    private static final ObservableRepository<Person,String> baseRepository = new ObservableRepository<>(new IRepository<Person, String>() {
-    	@Override
-    	public Person get(String key) throws RepositoryException { return null; }
-    	@Override
-    	public Collection<Person> getAll() throws RepositoryException { return null; }
-    	@Override
-    	public boolean insert(Person elem) throws RepositoryException { return true; }
-    	@Override
-    	public boolean delete(Person elem) throws RepositoryException { return true; }
-    	@Override
-    	public boolean update(Person elem) throws RepositoryException { return true; }
-	});
+    private static final ObservableRepository<Person,String,Predicate<Person>> baseRepository =
+			new ObservableRepository<>(new IRepository<Person, String, Predicate<Person>>() {
+				@Override
+				public Person get(String key) throws RepositoryException { return null; }
+				@Override
+				public Collection<Person> getAll() throws RepositoryException { return null; }
+				@Override
+				public Collection<Person> getAll(Predicate<Person> filter) throws RepositoryException { return null; }
+				@Override
+				public boolean insert(Person elem) throws RepositoryException { return true; }
+				@Override
+				public boolean delete(Person elem) throws RepositoryException { return true; }
+				@Override
+				public boolean update(Person elem) throws RepositoryException { return true; }
+			});
 
     public void test() {
     	final int get = 0;
@@ -45,7 +49,7 @@ public class NullFreeRepositoryTest  extends TestCase {
     	
     	registerObservers(get, insert, delete, update, called);
     	
-    	NullFreeRepository<Person,String> repository = new NullFreeRepository<>(baseRepository);
+    	NullFreeRepository<Person,String,Predicate<Person>> repository = new NullFreeRepository<>(baseRepository);
     	
     	try {
     		repository.get(null);
@@ -57,12 +61,15 @@ public class NullFreeRepositoryTest  extends TestCase {
     		Assert.assertFalse(called[insert]);
     		Assert.assertFalse(called[delete]);
     		Assert.assertFalse(called[update]);
+			Assert.assertNotNull(repository.getAll().size());
     		Assert.assertEquals(repository.getAll().size(), 0);
+			Assert.assertNotNull(repository.getAll((person)->true));
+			Assert.assertEquals(repository.getAll((person)->true).size(), 0);
 		} catch (RepositoryException e) {
 			Assert.fail(e.getMessage());
 		}
     	
-    	repository = new NullFreeRepository<>(false, false, false, false, false, false, baseRepository);
+    	repository = new NullFreeRepository<>(false, false, false, false, false, false, false, baseRepository);
     	
     	try {
     		repository.get(null);
@@ -75,6 +82,7 @@ public class NullFreeRepositoryTest  extends TestCase {
     		Assert.assertTrue(called[delete]);
     		Assert.assertTrue(called[update]);
     		Assert.assertEquals(repository.getAll(), null);
+			Assert.assertEquals(repository.getAll((person)->true), null);
 		} catch (RepositoryException e) {
 			Assert.fail(e.getMessage());
 		}

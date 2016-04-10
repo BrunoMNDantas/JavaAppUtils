@@ -1,27 +1,30 @@
 package apputils.repository.repository;
 
+import apputils.repository.utils.RepositoryException;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
-import apputils.repository.utils.RepositoryException;
-
-public class ObservableRepository<T,K> implements IRepository<T,K>{
+public class ObservableRepository<T,K,F> implements IRepository<T,K,F>{
 	
 	private final Collection<Consumer<T>> onGet;
 	private final Collection<Consumer<Collection<T>>> onGetAll;
+	private final Collection<Consumer<Collection<T>>> onGetAllFiltered;
 	private final Collection<Consumer<T>> onInsert;
 	private final Collection<Consumer<T>> onDelete;
 	private final Collection<Consumer<T>> onUpdate;
-	private final IRepository<T,K> repository;
+	private final IRepository<T,K,F> repository;
 	
 	
 	
-	public ObservableRepository(Consumer<T> onGet, Consumer<Collection<T>> onGetAll, Consumer<T> onInsert, 
+	public ObservableRepository(Consumer<T> onGet, Consumer<Collection<T>> onGetAll,
+								Consumer<Collection<T>> onGetAllFiltered, Consumer<T> onInsert,
 								Consumer<T> onDelete, Consumer<T> onUpdate, 
-								IRepository<T,K> repository) {
+								IRepository<T,K,F> repository) {
 		this.onGet = new LinkedList<>();
 		this.onGetAll = new LinkedList<>();
+		this.onGetAllFiltered = new LinkedList<>();
 		this.onInsert = new LinkedList<>();
 		this.onDelete = new LinkedList<>();
 		this.onUpdate = new LinkedList<>();
@@ -32,7 +35,10 @@ public class ObservableRepository<T,K> implements IRepository<T,K>{
 		
 		if(onGetAll != null)
 			this.onGetAll.add(onGetAll);
-		
+
+		if(onGetAllFiltered != null)
+			this.onGetAllFiltered.add(onGetAllFiltered);
+
 		if(onInsert != null)
 			this.onInsert.add(onInsert);
 		
@@ -43,8 +49,8 @@ public class ObservableRepository<T,K> implements IRepository<T,K>{
 			this.onUpdate.add(onUpdate);
 	}
 	
-	public ObservableRepository(IRepository<T,K> repository) {
-		this(null, null, null, null, null, repository);
+	public ObservableRepository(IRepository<T,K,F> repository) {
+		this(null, null, null, null, null, null, repository);
 	}
 	
 	
@@ -66,6 +72,16 @@ public class ObservableRepository<T,K> implements IRepository<T,K>{
 		for(Consumer<Collection<T>> action : onGetAll)
 			action.accept(elems);
 	
+		return elems;
+	}
+
+	@Override
+	public Collection<T> getAll(F filter) throws RepositoryException {
+		Collection<T> elems = repository.getAll(filter);
+
+		for(Consumer<Collection<T>> action : onGetAllFiltered)
+			action.accept(elems);
+
 		return elems;
 	}
 	
@@ -123,7 +139,17 @@ public class ObservableRepository<T,K> implements IRepository<T,K>{
 		if(onGetAll != null)
 			this.onGetAll.remove(onGetAll);
 	}
-	
+
+	public void registerOnGetAllFiltered(Consumer<Collection<T>> onGetAllFiltered){
+		if(onGetAllFiltered != null)
+			this.onGetAllFiltered.add(onGetAllFiltered);
+	}
+
+	public void unregisterOnGetAllFiltered(Consumer<Collection<T>> onGetAllFiltered){
+		if(onGetAllFiltered != null)
+			this.onGetAllFiltered.remove(onGetAllFiltered);
+	}
+
 	public void registerOnInsert(Consumer<T> onInsert){
 		if(onInsert != null)
 			this.onInsert.add(onInsert);

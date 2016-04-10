@@ -1,20 +1,20 @@
 package apputils.repository.repository;
 
-import java.util.Collection;
-
 import apputils.repository.utils.RepositoryException;
 
-public class ThreadSafeRepository<T,K> implements IRepository<T,K>{
+import java.util.Collection;
 
-	protected final IRepository<T,K> repository;
+public class ThreadSafeRepository<T,K,F> implements IRepository<T,K,F>{
+
+	protected final IRepository<T,K,F> repository;
 	protected final Object lock;
 	
-	public ThreadSafeRepository(IRepository<T,K> repository, Object lock) {
+	public ThreadSafeRepository(IRepository<T,K,F> repository, Object lock) {
 		this.repository = repository;
 		this.lock = lock;
 	}
 	
-	public ThreadSafeRepository(IRepository<T,K> repository) {
+	public ThreadSafeRepository(IRepository<T,K,F> repository) {
 		this(repository, new Object());
 	}
 	
@@ -29,6 +29,13 @@ public class ThreadSafeRepository<T,K> implements IRepository<T,K>{
 	public Collection<T> getAll() throws RepositoryException {
 		synchronized (lock) {
 			return repository.getAll();
+		}
+	}
+
+	@Override
+	public Collection<T> getAll(F filter) throws RepositoryException {
+		synchronized (lock) {
+			return repository.getAll(filter);
 		}
 	}
 

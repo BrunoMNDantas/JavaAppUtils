@@ -1,6 +1,6 @@
 package apputils.repository;
 
-import apputils.repository.repository.clonableRepository.ICloneable;
+import apputils.repository.repository.clonable.ICloneable;
 
 public class Person implements ICloneable<Person> {
 	

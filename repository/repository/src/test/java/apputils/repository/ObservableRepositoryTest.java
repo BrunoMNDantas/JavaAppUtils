@@ -1,8 +1,5 @@
 package apputils.repository;
 
-import java.util.Collection;
-import java.util.function.Consumer;
-
 import apputils.repository.repository.MemoryRepository;
 import apputils.repository.repository.ObservableRepository;
 import apputils.repository.utils.IKeyExtractor;
@@ -11,6 +8,10 @@ import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import java.util.Collection;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 
 public class ObservableRepositoryTest  extends TestCase {
@@ -25,16 +26,17 @@ public class ObservableRepositoryTest  extends TestCase {
     
     
     private static final IKeyExtractor<Person, String> KEY_EXTRACTOR = (person)->person.name;
-    private static final ObservableRepository<Person,String> repository = new ObservableRepository<>(new MemoryRepository<>(KEY_EXTRACTOR));
+    private static final ObservableRepository<Person,String,Predicate<Person>> repository = new ObservableRepository<>(new MemoryRepository<>(KEY_EXTRACTOR));
 
     public void test() {
     	final Person person = new Person("Ronaldo", 30);
     	final int getObserver = 0;
     	final int getAllObserver = 1;
-    	final int insertObserver = 2;
-    	final int deleteObserver = 3;
-    	final int updateObserver = 4;
-    	final int[] observers = new int[5];
+		final int getAllFilteredObserver = 2;
+    	final int insertObserver = 3;
+    	final int deleteObserver = 4;
+    	final int updateObserver = 5;
+    	final int[] observers = new int[6];
     	
     	Consumer<Person> onGet = (p) -> { 
     		if(p.equals(person))
@@ -44,6 +46,10 @@ public class ObservableRepositoryTest  extends TestCase {
     		if(ps.size()==1)
     			observers[getAllObserver]++;
     	};
+		Consumer<Collection<Person>> onGetAllFiltered = (ps)->{
+			if(ps.size()==1)
+				observers[getAllFilteredObserver]++;
+		};
     	Consumer<Person> onInsert = (p)->{
     		if(p.equals(person))
     			observers[insertObserver]++;
@@ -57,12 +63,12 @@ public class ObservableRepositoryTest  extends TestCase {
     			observers[updateObserver]++;
     	};
     	
-    	register(onGet, onGetAll, onInsert, onDelete, onUpdate);
+    	register(onGet, onGetAll, onGetAllFiltered, onInsert, onDelete, onUpdate);
     	
     	try {
     		useRepository(person);
 			
-    		unregister(onGet, onGetAll, onInsert, onDelete, onUpdate);
+    		unregister(onGet, onGetAll, onGetAllFiltered, onInsert, onDelete, onUpdate);
         	
         	useRepository(person);
 		} catch (RepositoryException e) {
@@ -77,23 +83,28 @@ public class ObservableRepositoryTest  extends TestCase {
 		repository.insert(person);
 		repository.get("Ronaldo");
 		repository.getAll();
+		repository.getAll((p)->p.age==30);
 		repository.update(person);
 		repository.delete(person);
 	}
 
-	private void unregister(Consumer<Person> onGet, Consumer<Collection<Person>> onGetAll, Consumer<Person> onInsert,
-			Consumer<Person> onDelete, Consumer<Person> onUpdate) {
+	private void unregister(Consumer<Person> onGet, Consumer<Collection<Person>> onGetAll,
+							Consumer<Collection<Person>> onGetAllFiltered, Consumer<Person> onInsert,
+							Consumer<Person> onDelete, Consumer<Person> onUpdate) {
 		repository.unregisterOnGet(onGet);
 		repository.unregisterOnGetAll(onGetAll);
+		repository.unregisterOnGetAllFiltered(onGetAllFiltered);
 		repository.unregisterOnInsert(onInsert);
 		repository.unregisterOnDelete(onDelete);
 		repository.unregisterOnUpdate(onUpdate);
 	}
 
-	private void register(Consumer<Person> onGet, Consumer<Collection<Person>> onGetAll, Consumer<Person> onInsert,
-			Consumer<Person> onDelete, Consumer<Person> onUpdate) {
+	private void register(	Consumer<Person> onGet, Consumer<Collection<Person>> onGetAll,
+							Consumer<Collection<Person>> onGetAllFiltered, Consumer<Person> onInsert,
+							Consumer<Person> onDelete, Consumer<Person> onUpdate) {
 		repository.registerOnGet(onGet);
     	repository.registerOnGetAll(onGetAll);
+		repository.registerOnGetAllFiltered(onGetAllFiltered);
     	repository.registerOnInsert(onInsert);
     	repository.registerOnDelete(onDelete);
     	repository.registerOnUpdate(onUpdate);

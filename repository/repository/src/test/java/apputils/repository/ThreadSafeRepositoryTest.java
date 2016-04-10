@@ -1,8 +1,5 @@
 package apputils.repository;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import apputils.repository.repository.MemoryRepository;
 import apputils.repository.repository.ThreadSafeRepository;
 import apputils.repository.utils.IKeyExtractor;
@@ -10,6 +7,10 @@ import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
 
 public class ThreadSafeRepositoryTest  extends TestCase {
@@ -24,7 +25,7 @@ public class ThreadSafeRepositoryTest  extends TestCase {
     
     
     private static final IKeyExtractor<Person, String> KEY_EXTRACTOR = (person)->person.name;
-    private static final ThreadSafeRepository<Person,String> repository = new ThreadSafeRepository<>(new MemoryRepository<>(KEY_EXTRACTOR));
+    private static final ThreadSafeRepository<Person,String,Predicate<Person>> repository = new ThreadSafeRepository<>(new MemoryRepository<>(KEY_EXTRACTOR));
 
     private final int nThreads = 16;
 	private final int insertPerThread = 512;
@@ -33,6 +34,7 @@ public class ThreadSafeRepositoryTest  extends TestCase {
     	runInsert();
     	runGet();
     	runGetAll();
+		runGetAllFiltered();
     	runUpdate();
     	runDelete();
     }
@@ -154,8 +156,50 @@ public class ThreadSafeRepositoryTest  extends TestCase {
 			}
 		}).start();
 	}
-    
-    private void runGet() {
+
+	private void runGetAllFiltered() {
+		CountDownLatch start = new CountDownLatch(1);
+		CountDownLatch end = new CountDownLatch(nThreads);
+		AtomicInteger success = new AtomicInteger(0);
+
+		for(int i=0; i<nThreads; ++i)
+			runGetAllFilteredThread(start, end, i, success);
+
+		try {
+			start.countDown();
+			end.await();
+			assertEquals(nThreads, success.get());
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	private void runGetAllFilteredThread(CountDownLatch start, CountDownLatch end, int id, AtomicInteger success) {
+		new Thread(()->{
+			int count = 0;
+			int total = nThreads * insertPerThread;
+			boolean fail = false;
+			try {
+				start.await();
+
+				while(count++<insertPerThread){
+					if(repository.getAll((person)->true).size()!=total){
+						fail = true;
+						break;
+					}
+				}
+			} catch(Exception e) {
+				fail = true;
+			} finally {
+				if(!fail)
+					success.incrementAndGet();
+				end.countDown();
+			}
+		}).start();
+	}
+
+
+	private void runGet() {
 		CountDownLatch start = new CountDownLatch(1);
     	CountDownLatch end = new CountDownLatch(nThreads);
     	AtomicInteger success = new AtomicInteger(0);

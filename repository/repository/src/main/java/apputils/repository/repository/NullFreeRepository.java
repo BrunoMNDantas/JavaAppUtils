@@ -1,27 +1,30 @@
 package apputils.repository.repository;
 
+import apputils.repository.utils.RepositoryException;
+
 import java.util.Collection;
 import java.util.LinkedList;
 
-import apputils.repository.utils.RepositoryException;
-
-public class NullFreeRepository<T,K> implements IRepository<T,K> {
+public class NullFreeRepository<T,K,F> implements IRepository<T,K,F> {
 	
 	private final boolean ignoreNullOnGet;
-	private final boolean returnEmptyOnGetAll; 
+	private final boolean returnEmptyOnGetAll;
+	private final boolean returnEmptyOnGetAllFiltered;
 	private final boolean ignoreNullOnInsert; 
 	private final boolean ignoreNullOnDelete; 
 	private final boolean ignoreNullOnUpdate;
 	private final boolean resultOnIgnore;
-	private final IRepository<T,K> repository;
+	private final IRepository<T,K,F> repository;
 	
 	
-	public NullFreeRepository(	boolean ignoreNullOnGet, boolean returnEmptyOnGetAll, 
+	public NullFreeRepository(	boolean ignoreNullOnGet,
+								boolean returnEmptyOnGetAll, boolean returnEmptyOnGetAllFiltered,
 								boolean ignoreNullOnInsert, boolean ignoreNullOnDelete, 
 								boolean ignoreNullOnUpdate, boolean resultOnIgnore,
-								IRepository<T,K> repository) {
+								IRepository<T,K,F> repository) {
 		this.ignoreNullOnGet = ignoreNullOnGet;
 		this.returnEmptyOnGetAll = returnEmptyOnGetAll;
+		this.returnEmptyOnGetAllFiltered = returnEmptyOnGetAllFiltered;
 		this.ignoreNullOnInsert = ignoreNullOnInsert;
 		this.ignoreNullOnDelete = ignoreNullOnDelete;
 		this.ignoreNullOnUpdate = ignoreNullOnUpdate;
@@ -29,8 +32,8 @@ public class NullFreeRepository<T,K> implements IRepository<T,K> {
 		this.repository = repository;
 	}
 	
-	public NullFreeRepository(IRepository<T,K> repository) {
-		this(true, true, true, true, true, true, repository);
+	public NullFreeRepository(IRepository<T,K,F> repository) {
+		this(true, true, true, true, true, true, true, repository);
 	}
 
 	@Override
@@ -48,6 +51,16 @@ public class NullFreeRepository<T,K> implements IRepository<T,K> {
 		if(returnEmptyOnGetAll && elems == null)
 			return new LinkedList<>();
 		
+		return elems;
+	}
+
+	@Override
+	public Collection<T> getAll(F filter) throws RepositoryException {
+		Collection<T> elems = repository.getAll(filter);
+
+		if(returnEmptyOnGetAllFiltered && elems == null)
+			return new LinkedList<>();
+
 		return elems;
 	}
 

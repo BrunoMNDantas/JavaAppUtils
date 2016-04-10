@@ -1,13 +1,15 @@
 package apputils.repository;
 
 import apputils.repository.repository.MemoryRepository;
-import apputils.repository.repository.clonableRepository.CloneableRepository;
+import apputils.repository.repository.clonable.CloneableRepository;
 import apputils.repository.utils.IKeyExtractor;
 import apputils.repository.utils.RepositoryException;
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import java.util.function.Predicate;
 
 
 public class CloneableRepositoryTest  extends TestCase {
@@ -21,7 +23,7 @@ public class CloneableRepositoryTest  extends TestCase {
     }
     
     private static final IKeyExtractor<Person,String> KEY_EXTRACTOR = (p)->p.name;
-    private static final CloneableRepository<Person,String> repository = new CloneableRepository<>(new MemoryRepository<>(KEY_EXTRACTOR));
+    private static final CloneableRepository<Person,String,Predicate<Person>> repository = new CloneableRepository<>(new MemoryRepository<>(KEY_EXTRACTOR));
     
 
     public void test() {
