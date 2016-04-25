@@ -77,7 +77,7 @@ public abstract class JDBCRepository<T,K,F> implements IRepository<T,K,F> {
     @Override
     public boolean insert(T t) throws RepositoryException {
         try{
-            return executeStatement((conn)->conn.prepareStatement(insertQuery),
+            return executeStatement((conn)->conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS),
                                     (stmt)->prepareInsertStatement(stmt, t),
                                     (conn, stmt)->insert(conn, stmt, t));
         } catch(SQLException e) {
@@ -111,16 +111,25 @@ public abstract class JDBCRepository<T,K,F> implements IRepository<T,K,F> {
 
     protected <R> R execute(JDBCFunction<Connection, R> executor) throws SQLException, RepositoryException {
         Connection conn = null;
+        boolean failed = false;
 
         try {
             Class.forName(jdbcDriver);
 
             conn = DriverManager.getConnection(dbURL, user, password);
+            conn.setAutoCommit(false);
 
             return executor.apply(conn);
         } catch(ClassNotFoundException e) {
+            failed = true;
             throw new RepositoryException("JDBC Driver [" + jdbcDriver + "] not found!", e);
+        } catch(Exception ex) {
+            failed = true;
+            throw ex;
         } finally {
+            if(!failed)
+                conn.setAutoCommit(true);
+
             closeConnection(conn);
         }
     }
